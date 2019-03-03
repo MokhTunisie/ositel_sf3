@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+        <h1 class="page-header">{{"Transaction"|trans()}}</h1>
+
+        <table class="record_properties table table-bordered table-condensed table-striped">
+            <tbody>
+                <tr>
+                    <th>{{"id"|trans|capitalize}}</th>
+                    <td>{{ entity.id }}</td>
+                </tr>
+                <tr>
+                    <th>{{"title"|trans|capitalize}}</th>
+                    <td>{{ entity.title }}</td>
+                </tr>
+                <tr>
+                    <th>{{"amount"|trans|capitalize}}</th>
+                    <td>{{ entity.amount }}</td>
+                </tr>
+                <tr>
+                    <th>{{"isInput"|trans|capitalize}}</th>
+                    <td><i class="{{ entity.isInput ? 'glyphicon glyphicon-check' : '' }}"></i></td>
+                </tr>
+                <tr>
+                    <th>{{"description"|trans|capitalize}}</th>
+                    <td>{{ entity.description }}</td>
+                </tr>
+                <tr>
+                    <th>{{"isValid"|trans|capitalize}}</th>
+                    <td><i class="{{ entity.isValid ? 'glyphicon glyphicon-check' : '' }}"></i></td>
+                </tr>
+                <tr>
+                    <th>{{"createdAt"|trans|capitalize}}</th>
+                    <td>{{ entity.createdAt?entity.createdAt|date('d/m/Y H:i:s'):'' }}</td>
+                </tr>
+                <tr>
+                    <th>{{"updatedAt"|trans|capitalize}}</th>
+                    <td>{{ entity.updatedAt?entity.updatedAt|date('d/m/Y H:i:s'):'' }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="record_actions col-lg-10">
+            
+            <div class="btn-group">
+                <a class="btn btn-default" href="{{ path('transactions_edit', { 'id': entity.id }) }}">
+                    <i class="glyphicon glyphicon-pencil"></i>
+                    {{ 'modifier'|trans({})|capitalize }}
+                </a>            </div>
+            <div class="btn-group">
+                <a class="btn btn-default" href="#delete" data-toggle="modal">
+                    <i class="glyphicon glyphicon-trash glyphicon-white"></i>
+                    {{ 'supprimer'|trans({})|capitalize }}
+                </a>            </div>
+            <div class="btn-group">
+            <a class="btn btn-default" href="{{ path('transactions') }}">
+                <i class="glyphicon glyphicon-th-list"></i>
+                {{ 'retour à la liste'|trans({})|capitalize }}
+            </a>
+
+            </div>
+            <form action="{{ path('transactions_delete', { 'id': entity.id }) }}" method="post">
+                <div id="delete" class="modal fade">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h3>{{ 'Delete'|trans({}, 'admin')|capitalize }}</h3>
+                            </div>
+                            <div class="modal-body">
+                                {{ 'Confirm delete'|trans({}, 'admin') }}
+                            </div>
+                            <div class="modal-footer">
+                                {{ form_widget(delete_form) }}
+                                <input type="hidden" name="_method" value="DELETE" />
+                                <a href="#" class="btn btn-default" data-dismiss="modal">{{ 'Cancel'|trans({}, 'admin')|capitalize }}</a>
+                                <button class="btn btn-danger" type="submit">
+                                    <i class="glyphicon glyphicon-trash glyphicon-white"></i>
+                                    {{ 'Delete'|trans({}, 'admin')|capitalize }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+{% endblock %}

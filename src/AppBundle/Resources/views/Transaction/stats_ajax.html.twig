@@ -1,0 +1,70 @@
+<table class="records_list table table-bordered table-condensed table-striped">
+    <thead>
+    <tr>
+        <th {% if transactions.isSorted("id") %} class="sorted"{% endif %}>{{ knp_pagination_sortable(transactions, "id"|trans|capitalize, "id") }}</th>
+        <th {% if transactions.isSorted("title") %} class="sorted"{% endif %}>{{ knp_pagination_sortable(transactions, "title"|trans|capitalize, "title") }}</th>
+        <th>{{ "category"|trans|capitalize }}</th>
+        <th {% if transactions.isSorted("amount") %} class="sorted"{% endif %}>{{ knp_pagination_sortable(transactions, "amount"|trans|capitalize, "amount") }}</th>
+        <th {% if transactions.isSorted("isInput") %} class="sorted"{% endif %}>{{ knp_pagination_sortable(transactions, "isInput"|trans|capitalize, "isInput") }}</th>
+        <th {% if transactions.isSorted("isValid") %} class="sorted"{% endif %}>{{ knp_pagination_sortable(transactions, "isValid"|trans|capitalize, "isValid") }}</th>
+        <th>{{ "description"|trans|capitalize }}</th>
+        <th>{{ "tags"|trans|capitalize }}</th>
+        <th {% if transactions.isSorted("createdAt") %} class="sorted"{% endif %}>{{ knp_pagination_sortable(transactions, "createdAt"|trans|capitalize, "createdAt") }}</th>
+        <th>{{ "updatedAt"|trans|capitalize }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {%- for transaction in transactions %}
+        <tr>
+            <td data-title="{{ "id"|trans|capitalize }}"><a
+                        href="{{ path('transactions_show', { 'id': transaction.id }) }}">{{ transaction.id }}</a>
+            </td>
+            <td data-title="{{ "title"|trans|capitalize }}">{{ transaction.title }}</td>
+            <td data-title="{{ "category"|trans|capitalize }}">{{ transaction.category.title }}</td>
+            <td data-title="{{ "amount"|trans|capitalize }}">{{ transaction.amount }}</td>
+            <td data-title="{{ "isInput"|trans|capitalize }}">
+                <i class="{{ transaction.isInput ? 'glyphicon glyphicon-check text-success' : 'glyphicon glyphicon-unchecked text-danger' }}"></i>
+            </td>
+            <td data-title="{{ "isValid"|trans|capitalize }}">
+                <i class="{{ transaction.isValid ? 'glyphicon glyphicon-check text-success' : 'glyphicon glyphicon-unchecked text-danger' }}"></i>
+            </td>
+            <td data-title="{{ "description"|trans|capitalize }}">{{ transaction.description }}</td>
+            <td data-title="{{ "tags"|trans|capitalize }}">
+                {% for tag in transaction.tags %}
+                    <small>{{ tag.name }}{{ loop.last?'':',' }}</small>
+                {% endfor %}
+            </td>
+            <td data-title="{{ "createdAt"|trans|capitalize }}">{{ transaction.createdAt?transaction.createdAt|date('d/m/Y H:i:s'):'' }}</td>
+            <td data-title="{{ "updatedAt"|trans|capitalize }}">{{ transaction.updatedAt?transaction.updatedAt|date('d/m/Y H:i:s'):'' }}</td>
+        </tr>
+    {%- endfor %}
+
+    </tbody>
+</table>
+<nav aria-label="Page navigation">
+    {{ knp_pagination_render(transactions) }}
+</nav>
+
+<div class="row">
+    <div class="col-sm-6"><b>{{ 'total entrées' }} :</b> {{ totalInput }} &euro;</div>
+    <div class="col-sm-6"><b>{{ 'Trésorerie débu' }} :</b> {{ monthlyTreasury['start'] }} &euro;</div>
+</div>
+<div class="row">
+    <div class="col-sm-6"><b>{{ 'total sotries' }} :</b> {{ totalOutput }} &euro;</div>
+    <div class="col-sm-6"><b>{{ 'Trésorerie fin' }} :</b> {{ monthlyTreasury['end'] }} &euro;</div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('ul.pagination a').on('click', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: "GET",
+                url: $(this).attr('href'),
+                dataType: "json",
+            }).done(function (result) {
+                $('#transactionsTable').html(result.content);
+            });
+        });
+    });
+</script>

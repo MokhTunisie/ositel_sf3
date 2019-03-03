@@ -1,0 +1,18 @@
+<form method="get" action="{{ action }}" enctype="application/x-www-form-urlencoded">
+    <div class="form-group">
+        <div class="col-sm-5">
+            <select id="knpFilterFieldName" class="form-control" name="{{ filterFieldName }}">
+                <option value="" ></option>
+                {% for field, label in fields %}
+                    <option value="{{ field }}"{% if selectedField == field %} selected="selected"{% endif %}>{{ label|capitalize }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-sm-5">
+            <input class="form-control" id="knpFilterFieldValue" type="text" value="{{ selectedValue }}" name="{{ filterValueName }}"/>
+        </div>
+        <div class="col-sm-2">
+            <button type="submit" class="btn btn-primary">{{ options.button }}</button>
+        </div>
+    </div>
+</form>

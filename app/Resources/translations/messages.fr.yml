@@ -1,0 +1,50 @@
+%entity% edit: Edition d'un(e) %entity%
+Title: Titre
+Amount: Montant
+Description: Description
+Category: Categorie
+category: categorie
+Tags: Tags
+tags: tags
+tag: tag
+Filter: Filtrer
+Is input: Entrée
+Is valid: Valide
+sauvgarder: sauvgarder
+retour à la liste: retour à la liste
+
+%entity% list: Liste des %entity%s
+Creer un nouveau élément: Creer un nouveau élément
+id: id
+title: titre
+amount: montant
+isInput: entrée
+type: type
+entrée: entrée
+sortie: sortie
+isValid: valide
+description: description
+createdAt: créé le
+updatedAt: modifié le
+Actions: Actions
+modifier: modifier
+supprimer: supprimer
+êtes-vous sûr: êtes-vous sûr
+annuler: annuler
+%entity% creation: Création d'un(e) %entity%
+valider: valider
+
+Statistiques: Statistiques
+
+month_01: Janvier
+month_02: Février
+month_03: Mars
+month_04: Avril
+month_05: Mai
+month_06: Juin
+month_07: Juillet
+month_08: Aout
+month_09: Septembre
+month_10: Octobre
+month_11: Novembre
+month_12: Decembre

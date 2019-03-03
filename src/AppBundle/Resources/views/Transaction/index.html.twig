@@ -1,0 +1,143 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+{% endblock %}
+{% block body %}
+
+    <h1 class="page-header">{{ "%entity% list"|trans({"%entity%":"Transaction"}) }}</h1>
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
+            {{ knp_pagination_filter(entities, {'title': 'title', 'description': 'description', 'category': 'category', 'tags': 'tag', 'createdAt': 'createdAt', 'updatedAt': 'updatedAt'}) }}
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <a class="btn btn-default pull-right" href="{{ path('transactions_new') }}">
+                <i class="glyphicon glyphicon-plus-sign"></i>
+                {{ "Creer un nouveau élément"|trans({}) }}
+            </a>
+        </div>
+    </div>
+    <br/>
+
+    <div class="responsive-table-line">
+        <table class="records_list table table-bordered table-condensed table-striped">
+            <thead>
+            <tr>
+                <th {% if entities.isSorted("id") %} class="sorted"{% endif %}>{{ knp_pagination_sortable(entities, "id"|trans|capitalize, "id") }}</th>
+                <th {% if entities.isSorted("title") %} class="sorted"{% endif %}>{{ knp_pagination_sortable(entities, "title"|trans|capitalize, "title") }}</th>
+                <th>{{ "category"|trans|capitalize }}</th>
+                <th {% if entities.isSorted("amount") %} class="sorted"{% endif %}>{{ knp_pagination_sortable(entities, "amount"|trans|capitalize, "amount") }}</th>
+                <th {% if entities.isSorted("isInput") %} class="sorted"{% endif %}>{{ knp_pagination_sortable(entities, "type"|trans|capitalize, "isInput") }}</th>
+                <th {% if entities.isSorted("isValid") %} class="sorted"{% endif %}>{{ knp_pagination_sortable(entities, "isValid"|trans|capitalize, "isValid") }}</th>
+                <th>{{ "description"|trans|capitalize }}</th>
+                <th>{{ "tags"|trans|capitalize }}</th>
+                <th {% if entities.isSorted("createdAt") %} class="sorted"{% endif %}>{{ knp_pagination_sortable(entities, "createdAt"|trans|capitalize, "createdAt") }}</th>
+                <th>{{ "updatedAt"|trans|capitalize }}</th>
+                <th>{{ "Actions"|trans({}) }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {%- for entity in entities %}
+                <tr>
+                    <td data-title="{{ "id"|trans|capitalize }}"><a
+                                href="{{ path('transactions_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                    <td data-title="{{ "title"|trans|capitalize }}">{{ entity.title }}</td>
+                    <td data-title="{{ "category"|trans|capitalize }}">{{ entity.category.title }}</td>
+                    <td data-title="{{ "amount"|trans|capitalize }}">{{ entity.amount }}</td>
+                    <td data-title="{{ "type"|trans|capitalize }}">
+                        <i class="{{ entity.isInput ? 'text-success' : 'text-danger' }}">{{ entity.isInput ? 'entrée'|trans|capitalize : 'sortie'|trans|capitalize }}</i>
+                    </td>
+                    <td data-title="{{ "isValid"|trans|capitalize }}">
+                        <i class="{{ entity.isValid ? 'glyphicon glyphicon-check text-success' : 'glyphicon glyphicon-unchecked text-danger' }}"></i>
+                    </td>
+                    <td data-title="{{ "description"|trans|capitalize }}">{{ entity.description }}</td>
+                    <td data-title="{{ "tags"|trans|capitalize }}">
+                        {% for tag in entity.tags %}
+                            <small>{{ tag.name }}{{ loop.last?'':',' }}</small>
+                        {% endfor %}
+                    </td>
+                    <td data-title="{{ "createdAt"|trans|capitalize }}">{{ entity.createdAt?entity.createdAt|date('d/m/Y H:i:s'):'' }}</td>
+                    <td data-title="{{ "updatedAt"|trans|capitalize }}">{{ entity.updatedAt?entity.updatedAt|date('d/m/Y H:i:s'):'' }}</td>
+                    <td data-title="{{ "Actions"|trans|capitalize }}">
+                        <div class="btn-group">
+                            <a class="btn btn-default" href="{{ path('transactions_edit', { 'id': entity.id }) }}">
+                                <i class="glyphicon glyphicon-pencil"></i>
+                                {{ 'modifier'|trans({})|capitalize }}
+                            </a>
+                            <a class="btn btn-default" href="#delete" data-toggle="modal"
+                               rel="{{ path('transactions_delete', { 'id': entity.id }) }}">
+                                <i class="glyphicon glyphicon-trash glyphicon-white"></i>
+                                {{ 'supprimer'|trans({})|capitalize }}
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {%- endfor %}
+
+            </tbody>
+        </table>
+    </div>
+    <nav aria-label="Page navigation">
+        {{ knp_pagination_render(entities) }}
+    </nav>
+    <form action="" method="post" id="delete_form">
+        <div id="delete" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h3>{{ 'supprimer'|trans({})|capitalize }}</h3>
+                    </div>
+                    <div class="modal-body">
+                        {{ 'êtes-vous sûr'|trans({})|capitalize }}
+                    </div>
+                    <div class="modal-footer">
+                        {{ form_widget(delete_form) }}
+                        <input type="hidden" name="_method" value="DELETE"/>
+                        <a href="#" class="btn btn-default"
+                           data-dismiss="modal">{{ 'annuler'|trans({})|capitalize }}</a>
+                        <button class="btn btn-danger" type="submit">
+                            <i class="glyphicon glyphicon-trash glyphicon-white"></i>
+                            {{ 'supprimer'|trans({})|capitalize }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script type="text/javascript">
+        $('#delete').on('shown.bs.modal', function (event) {
+            $('#delete_form').attr('action', $(event.relatedTarget).attr('rel'));
+        });
+
+        $(document).ready(function (event) {
+            initDateRange();
+        });
+
+        $('#knpFilterFieldName').change(function (event) {
+            initDateRange();
+        });
+
+        function initDateRange() {
+            if ($('#knpFilterFieldValue').hasClass('daterange-picker')) {
+                $('.daterange-picker').data('daterangepicker').remove();
+                $('#knpFilterFieldValue').removeClass('daterange-picker');
+                $('#knpFilterFieldValue').val('');
+            }
+            if (($('#knpFilterFieldName').val() == 'createdAt') || ($('#knpFilterFieldName').val() == 'updatedAt')) {
+                $('#knpFilterFieldValue').addClass('daterange-picker');
+                $('.daterange-picker').daterangepicker({
+                    autoApply: true,
+                    locale: {
+                        format: 'DD/MM/YYYY'
+                    }
+                });
+            }
+        }
+    </script>
+{% endblock %}

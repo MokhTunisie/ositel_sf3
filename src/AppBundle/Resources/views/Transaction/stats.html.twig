@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+{% endblock %}
+{% block body %}
+
+    <h1 class="page-header">{{ "Statistiques"|trans() }}</h1>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <div class="col-sm-5">
+                    {% set currentYear = 'now'|date('Y') %}
+                    <select id="year" class="form-control" name="year">
+                        {% for year in currentYear-50..currentYear %}
+                            <option value="{{ year }}" {% if year == currentYear %} selected="selected"{% endif %}>{{ year }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-sm-5">
+                    <select id="month" class="form-control" name="month">
+                        {% for month in 1..12 %}
+                            {% set monthLabel = "month_%02d"|format(month) %}
+                            <option value="{{ "%02d"|format(month) }}" {% if month == 'now'|date('m') %} selected="selected"{% endif %}>{{ monthLabel|trans() }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <button type="button" id="submitMonth" class="btn btn-primary">{{ 'valider'|trans }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+
+    <div class="responsive-table-line" id="transactionsTable">
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        $(function () {
+            loadTransactions();
+        });
+
+        $('#submitMonth').click(function (event) {
+            loadTransactions({
+                'year': $('#year').val(),
+                'month': $('#month').val()
+            });
+        });
+
+        function loadTransactions(data = {}) {
+            $.ajax({
+                type: "GET",
+                url: "{{ url('transactions_stats_ajax') }}",
+                dataType: "json",
+                data: data,
+            }).done(function (result) {
+                $('#transactionsTable').html(result.content);
+            });
+        }
+    </script>
+{% endblock %}

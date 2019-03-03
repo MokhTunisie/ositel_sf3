@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+        <h1 class="page-header">{{"%entity% creation"|trans({"%entity%":"Transaction"})}}</h1>
+
+        <form class="form-horizontal" action="{{ path('transactions_new') }}" method="post" enctype="multipart/form-data" >
+            {{ form_widget(form) }}
+        <div class="record_actions col-lg-10">
+            
+            <button class="btn btn-default" type="submit">{{ 'sauvgarder'|trans({})|capitalize }}</button>
+
+            <div class="btn-group">
+            <a class="btn btn-default" href="{{ path('transactions') }}">
+                <i class="glyphicon glyphicon-th-list"></i>
+                {{ 'retour à la liste'|trans({})|capitalize }}
+            </a>
+
+            </div>
+
+        </div>
+        </form>
+
+{% endblock %}
